@@ -73,7 +73,7 @@ Import-DbcConfig -Path $Configuration
 
 $InvokeDbcCheckParameters = @{}
 
-if ($Check) {
+if ($Check -and ($Check -ne '*' -or [string]::IsNullOrWhiteSpace($Check))) {
     Write-Verbose -Message "Adding required checks to Invoke-DbcCheck call."
     $InvokeDbcCheckParameters.add('Check',$Check)
 }
