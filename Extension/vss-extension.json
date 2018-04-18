@@ -1,0 +1,66 @@
+{
+  "manifestVersion": 1,
+  "id": "CLG-VSTS-DbaChecks-Extension",
+  "version": "1.0.0",
+  "name": "DbaChecks",
+  "publisher": "chrisgardner",
+  "description": "Tasks for running the DbaChecks tests within a build or release pipeline",
+  "categories": [
+    "Build and release"
+  ],
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "tags": [
+    "Release",
+    "Package",
+    "Publish"
+  ],
+  "galleryFlags": [
+    "Public"
+  ],
+  "branding": {
+    "color": "#f97923",
+    "theme": "dark"
+  },
+  "icons": {
+    "default": "images/logo.png"
+  },
+  "links": {
+    "getstarted": {
+      "uri": "https://github.com/chrislgardner/DbaChecks.VSTS/wiki"
+    },
+    "support": {
+      "uri": "https://github.com/chrislgardner/DbaChecks.VSTS/issues"
+    }
+  },
+  "screenshots": [
+  ],
+  "content": {
+    "details": {
+      "path": "readme.md"
+    },
+    "license": {
+      "path": "license.md"
+    }
+  },
+  "files": [
+    {
+      "path": "RunDbaChecks"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "RunDbaChecks",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "RunDbaChecks"
+      }
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "id": "a3d0d40e-04e9-4883-82d0-c1c3b50c82ce",
+  "name": "RunDbaChecks",
+  "friendlyName": "Run DbaChecks",
+  "description": "Run DbaChecks using a provided configuration and publish results to VSTS",
+  "helpMarkDown": "Version: #{Build.BuildNumber}#. [More Information](https://github.com/chrislgardner/DbaChecks.VSTS/wiki/)",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Chris Gardner",
+  "version": {
+    "Major": 1,
+    "Minor": 1,
+    "Patch": 0
+  },
+  "demands": [],
+  "minimumAgentVersion": "1.95.0",
+  "groups": [
+    {
+      "name": "output",
+      "displayName": "Output",
+      "isExpanded": true
+    },
+    {
+      "name": "credentials",
+      "displayName": "Credentials",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "Configuration",
+      "type": "filePath",
+      "label": "Configuration Source Path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Absolute path of the DbaChecks configuration file to use. Should be a .json file."
+    },
+    {
+      "name": "Check",
+      "type": "string",
+      "label": "Checks to include",
+      "defaultValue": "*",
+      "required": false,
+      "helpMarkDown": "Specify comma separated checks to run. Leave empty or * to run all checks."
+    },
+    {
+      "name": "ExcludeCheck",
+      "type": "string",
+      "label": "Checks to exclude",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify comma separated checks to exclude from running."
+    },
+    {
+      "name": "pesterOutputPath",
+      "type": "string",
+      "label": "Pester Output Path",
+      "required": false,
+      "helpMarkDown": "Path to output Pester results XML file for later importing into VSTS using \"Publish Test Results\" task.",
+      "groupname": "output"
+    },
+    {
+      "name": "powerBiOutputPath",
+      "type": "string",
+      "label": "PowerBI Output Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path to output PowerBI data file, which can then be published as an artifact and used in PowerBI reports.",
+      "groupname": "output"
+    },
+    {
+      "name": "credentialUsername",
+      "type": "string",
+      "label": "Credential Username",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Username for Credential parameter",
+      "groupname": "credentials"
+    },
+    {
+      "name": "credentialPassword",
+      "type": "string",
+      "label": "Credential Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Password for Credential parameter",
+      "groupname": "credentials"
+    },
+    {
+      "name": "sqlCredentialUsername",
+      "type": "string",
+      "label": "SQL Credential Username",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Username for SQL Credential parameter",
+      "groupname": "credentials"
+    },
+    {
+      "name": "sqlCredentialPassword",
+      "type": "string",
+      "label": "SQL Credential Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Password for SQL Credential parameter",
+      "groupname": "credentials"
+    }
+  ],
+  "dataSourceBindings": [
+  ],
+  "instanceNameFormat": "Run DbaChecks",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\rundbachecks.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
