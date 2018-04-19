@@ -3,7 +3,7 @@ param (
     [parameter(Mandatory)]
     [alias('pspath')]
     [validateScript({
-        if (-not (Test-Path -Path $_)) {
+        if (-not (Test-Path -Path $_ -PathType Leaf)) {
             throw 'Invalid Path specified'
         }
         $true
@@ -14,6 +14,12 @@ param (
 
     [string[]]$ExcludeCheck,
 
+    [validateScript({
+        if ($_.split('.')[-1] -ne 'xml') {
+            throw 'Pester output file must be of type XML'
+        }
+        $true
+    })]
     [string]$pesterOutputPath,
 
     [string]$powerBiOutputPath,
@@ -76,6 +82,9 @@ $InvokeDbcCheckParameters = @{}
 if ($Check -and ($Check -ne '*' -or [string]::IsNullOrWhiteSpace($Check))) {
     Write-Verbose -Message "Adding required checks to Invoke-DbcCheck call."
     $InvokeDbcCheckParameters.add('Check',$Check)
+}
+else {
+    $InvokeDbcCheckParameters.Add('AllChecks',$true)
 }
 if ($ExcludeCheck) {
     Write-Verbose -Message "Adding excluded checks to Invoke-DbcCheck call."
