@@ -10,6 +10,10 @@ param (
     })]
     [string]$Configuration,
 
+    [string[]]$SqlInstance,
+
+    [string[]]$ComputerName,
+
     [string[]]$Check,
 
     [string[]]$ExcludeCheck,
@@ -79,12 +83,31 @@ Import-DbcConfig -Path $Configuration
 
 $InvokeDbcCheckParameters = @{}
 
+$SqlInstance = $SqlInstance.Split(',')
+$ComputerName = $ComputerName.Split(',')
+
+if ($SqlInstance) {
+    Write-Verbose -Message "Adding SQL instances to Invoke-DbcCheck call"
+    $InvokeDbcCheckParameters.Add('SqlInstance',$SqlInstance)
+}
+
+if ($ComputerName) {
+    Write-Verbose -Message "Adding computer names to Invoke-DbcCheck call"
+    $InvokeDbcCheckParameters.Add('ComputerName',$ComputerName)
+}
+
 if ($Check -and ($Check -ne '*' -or [string]::IsNullOrWhiteSpace($Check))) {
     Write-Verbose -Message "Adding required checks to Invoke-DbcCheck call."
     $InvokeDbcCheckParameters.add('Check',$Check)
 }
 else {
     $InvokeDbcCheckParameters.Add('AllChecks',$true)
+}
+if ($SqlInstance) {
+    $InvokeDbcCheckParameters.Add('SqlInstance',$SqlInstance)
+}
+if ($SqlServer) {
+    $InvokeDbcCheckParameters.Add('SqlServer',$SqlServer)
 }
 if ($ExcludeCheck) {
     Write-Verbose -Message "Adding excluded checks to Invoke-DbcCheck call."

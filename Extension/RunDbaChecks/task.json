@@ -55,6 +55,22 @@
       "helpMarkDown": "Specify comma separated checks to exclude from running."
     },
     {
+      "name": "SqlInstance",
+      "type": "string",
+      "label": "SQL Instance Names",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify comma separated list of SQL instances to run SQL checks against. This will be used in place of any values in the configuration."
+    },
+    {
+      "name": "ComputerName",
+      "type": "string",
+      "label": "Computer Names",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify comma separated list of computer names to run computer checks against. This will be used in place of any values in the configuration."
+    },
+    {
       "name": "pesterOutputPath",
       "type": "string",
       "label": "Pester Output Path",
