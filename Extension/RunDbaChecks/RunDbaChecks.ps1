@@ -62,11 +62,11 @@ $ExcludeCheck = $ExcludeCheck -split ',' | Foreach-Object {
         $_
     }}
 
-if (Test-Path -Path $pesterOutputPath) {
+if ($pesterOutputPath -and (Test-Path -Path $pesterOutputPath)) {
     Write-Warning -Message "Pester output file already exists, this will overwrite the existing file: $pesterOutputPath"
 }
 
-if (Test-Path -Path $powerBiOutputPath) {
+if ($powerBiOutputPath -and (Test-Path -Path $powerBiOutputPath)) {
     Write-Warning -Message "PowerBI output file already exists, this will overwrite the existing file: $powerBiOutputPath"
 }
 
@@ -90,15 +90,14 @@ Import-DbcConfig -Path $Configuration
 
 $InvokeDbcCheckParameters = @{}
 
-$SqlInstance = $SqlInstance.Split(',')
-$ComputerName = $ComputerName.Split(',')
-
 if ($SqlInstance) {
+    $SqlInstance = $SqlInstance.Split(',')
     Write-Verbose -Message "Adding SQL instances to Invoke-DbcCheck call"
     $InvokeDbcCheckParameters.Add('SqlInstance',$SqlInstance)
 }
 
 if ($ComputerName) {
+    $ComputerName = $ComputerName.Split(',')
     Write-Verbose -Message "Adding computer names to Invoke-DbcCheck call"
     $InvokeDbcCheckParameters.Add('ComputerName',$ComputerName)
 }
