@@ -37,10 +37,15 @@ param (
     $sqlCredentialPassword
 )
 
-Write-Verbose -Message "Installing latest version of DbaChecks"
-Install-PackageProvider -Name NuGet -RequiredVersion 2.8.5.201 -Scope CurrentUser -Force -Confirm:$false -Verbose:$false
-Install-Module -Name DbaChecks -Scope CurrentUser -Force -Repository (Get-PsRepository)[0].Name
-
+Write-Verbose -Message "Attempting Install of latest version of DbaChecks"
+if (Get-Module PowerShellGet -ListAvailable) {
+    Install-PackageProvider -Name NuGet -RequiredVersion 2.8.5.201 -Scope CurrentUser -Force -Confirm:$false -Verbose:$false
+    Install-Module -Name DbaChecks -Scope CurrentUser -Force -Repository (Get-PsRepository)[0].Name
+}
+elseif (-not(Get-Module DbaChecks -ListAvailable)) {
+    Write-Error "DbaChecks not found and PowerShellGet not available to install latest version. Please install either to enable DbaChecks to run."
+    Exit -1
+}
 $AvailableChecks = Get-DbcCheck
 $Check = $Check -split ',' | Foreach-Object {
     if ($_ -notin $AvailableChecks.AllTags) {
