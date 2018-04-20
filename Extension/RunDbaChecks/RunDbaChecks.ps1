@@ -43,14 +43,14 @@ Install-Module -Name DbaChecks -Scope CurrentUser -Force -Repository (Get-PsRepo
 
 $AvailableChecks = Get-DbcCheck
 $Check = $Check -split ',' | Foreach-Object {
-    if ($_ -notin $AvailableChecks) {
+    if ($_ -notin $AvailableChecks.AllTags) {
         Write-Warning -Message "$_ not in list of available checks, please double check spelling."
     }
     else {
         $_
     }}
 $ExcludeCheck = $ExcludeCheck -split ',' | Foreach-Object {
-    if ($_ -notin $AvailableChecks) {
+    if ($_ -notin $AvailableChecks.AllTags) {
         Write-Warning -Message "$_ not in list of available checks, please double check spelling."
     }
     else {
