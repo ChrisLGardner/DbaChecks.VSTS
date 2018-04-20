@@ -37,7 +37,9 @@ param (
     $sqlCredentialPassword
 )
 
-Install-Module -Name DbaChecks -Scope CurrentUser -Force -SkipPublisherCheck -Repository (Get-PsRepository)[0].Name
+Write-Verbose -Message "Installing latest version of DbaChecks"
+Install-PackageProvider -Name NuGet -RequiredVersion 2.8.5.201 -Scope CurrentUser -Force -Confirm:$false -Verbose:$false
+Install-Module -Name DbaChecks -Scope CurrentUser -Force -Repository (Get-PsRepository)[0].Name
 
 $AvailableChecks = Get-DbcCheck
 $Check = $Check -split ',' | Foreach-Object {
