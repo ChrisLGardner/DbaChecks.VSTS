@@ -109,12 +109,6 @@ if ($Check -and ($Check -ne '*' -or [string]::IsNullOrWhiteSpace($Check))) {
 else {
     $InvokeDbcCheckParameters.Add('AllChecks',$true)
 }
-if ($SqlInstance) {
-    $InvokeDbcCheckParameters.Add('SqlInstance',$SqlInstance)
-}
-if ($SqlServer) {
-    $InvokeDbcCheckParameters.Add('SqlServer',$SqlServer)
-}
 if ($ExcludeCheck) {
     Write-Verbose -Message "Adding excluded checks to Invoke-DbcCheck call."
     $InvokeDbcCheckParameters.add('ExcludeCheck',$ExcludeCheck)
