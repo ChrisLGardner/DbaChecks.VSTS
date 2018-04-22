@@ -1,6 +1,8 @@
 $Sut = Join-Path -Path $PsScriptRoot -ChildPath "..\RunDbaChecks\RunDbaChecks.ps1" -Resolve
-#Install-PackageProvider -Name NuGet -RequiredVersion 2.8.5.201 -Scope CurrentUser -Force -Confirm:$false
-#Install-Module -Name DbaChecks -Scope CurrentUser -Force -Repository (Get-PsRepository)[0].Name
+if (-not (Get-Module dbachecks -ListAvailable)) {
+    Install-PackageProvider -Name NuGet -RequiredVersion 2.8.5.201 -Scope CurrentUser -Force -Confirm:$false
+    Install-Module -Name DbaChecks -Scope CurrentUser -Force -Repository (Get-PsRepository)[0].Name
+}
 
 Describe "Testing RunDbaChecks.ps1" {
     Mock -CommandName Write-Verbose -MockWith {}
