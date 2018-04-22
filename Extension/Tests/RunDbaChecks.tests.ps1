@@ -156,7 +156,7 @@ Describe "Testing RunDbaChecks.ps1" {
         It "Should create the SQL Credential object and pass it to Invoke-DbcCheck" {
             &$Sut -Configuration TestDrive:\TestFile.json -sqlCredentialUsername 'SqlUsername' -sqlCredentialPassword '5up3r5ecr3t!'
 
-            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$Credential -and $Credential.Username -eq 'SqlUsername' -and $Credential.GetNetworkCredential().Password -eq '5up3r5ecr3t!'}
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$SqlCredential -and $SqlCredential.Username -eq 'SqlUsername' -and $SqlCredential.GetNetworkCredential().Password -eq '5up3r5ecr3t!'}
         }
         It "Should correctly split a string of Sql Instance names and pass to Invoke-DbcCheck as an array" {
             &$Sut -Configuration TestDrive:\TestFile.json -SqlInstance 'Localhost\SqlInstance1, remote\sqlinstance2'

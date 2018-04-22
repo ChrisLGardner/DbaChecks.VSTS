@@ -83,7 +83,7 @@ if (([string]::IsNullOrWhiteSpace($sqlCredentialUsername) -and $sqlCredentialPas
     Write-Warning -Message "Full SQL credentials not provided, please check values enterred."
 }
 elseif ($sqlCredentialUsername -and $sqlCredentialPassword) {
-    $Credential = New-Object System.Management.Automation.PSCredential ($sqlCredentialUsername, (ConvertTo-SecureString $sqlCredentialPassword -AsPlainText -Force))
+    $SqlCredential = New-Object System.Management.Automation.PSCredential ($sqlCredentialUsername, (ConvertTo-SecureString $sqlCredentialPassword -AsPlainText -Force))
 }
 
 Import-DbcConfig -Path $Configuration
