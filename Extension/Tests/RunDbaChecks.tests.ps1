@@ -65,7 +65,6 @@ Describe "Testing RunDbaChecks.ps1" {
             [pscustomobject]@{AllTags = $MockTags}
         }
         Mock -CommandName Test-Path -MockWith {$true}
-        Mock -CommandName New-Object -MockWith {}
         Mock -CommandName Import-DbcConfig -MockWith {}
         Mock -CommandName Invoke-DbcCheck -MockWith {}
         Mock -CommandName Update-DbcPowerBiDataSource -MockWith {}
@@ -137,6 +136,11 @@ Describe "Testing RunDbaChecks.ps1" {
             Assert-MockCalled -CommandName Write-Warning -Scope It -ParameterFilter {$Message -eq 'Full credentials not provided, please check values enterred.'}
             Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$Credential -eq $Null}
         }
+        It "Should create the Credential object and pass it to Invoke-DbcCheck" {
+            &$Sut -Configuration TestDrive:\TestFile.json -credentialUsername 'Username' -credentialPassword '5up3r5ecr3t!'
+
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$Credential -and $Credential.Username -eq 'Username' -and $Credential.GetNetworkCredential().Password -eq '5up3r5ecr3t!'}
+        }
         It "Should warn when a SQL credential username is passed in without a password and not produce a credential object for Invoke-DbcCheck" {
             &$Sut -Configuration TestDrive:\TestFile.json -sqlCredentialUsername 'SqlUsername'
 
@@ -148,6 +152,11 @@ Describe "Testing RunDbaChecks.ps1" {
 
             Assert-MockCalled -CommandName Write-Warning -Scope It -ParameterFilter {$Message -eq 'Full SQL credentials not provided, please check values enterred.'}
             Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$SqlCredential -eq $Null}
+        }
+        It "Should create the SQL Credential object and pass it to Invoke-DbcCheck" {
+            &$Sut -Configuration TestDrive:\TestFile.json -sqlCredentialUsername 'SqlUsername' -sqlCredentialPassword '5up3r5ecr3t!'
+
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$Credential -and $Credential.Username -eq 'SqlUsername' -and $Credential.GetNetworkCredential().Password -eq '5up3r5ecr3t!'}
         }
     }
 
