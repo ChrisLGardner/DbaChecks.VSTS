@@ -58,7 +58,66 @@ Describe "Testing RunDbaChecks.ps1" {
     }
 
     Context "Testing Process" {
+        $MockTags = @('One','Two','Three')
+        Mock -CommandName Get-DbcCheck -MockWith {
+            [pscustomobject]@{AllTags = $MockTags}
+        }
+        Mock -CommandName Test-Path -MockWith {$true}
+        Mock -CommandName New-Object -MockWith {}
+        Mock -CommandName Import-DbcConfig -MockWith {}
+        Mock -CommandName Invoke-DbcCheck -MockWith {}
+        Mock -CommandName Update-DbcPowerBiDataSource -MockWith {}
 
+        It "Should correctly split an array of checks" {
+            &$Sut -Configuration TestDrive:\TestFile.json -Check 'One,Two,Three'
+
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$Check -and ($Check | Where-Object {$_ -in $MockTags}).Count -eq $Check.Count}
+        }
+        It "Should correctly remove unavailable checks when using Check parameter" {
+            &$Sut -Configuration TestDrive:\TestFile.json -Check 'One,Two,Four'
+
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$Check -and $Check.Count -eq 2}
+        }
+        It "Should not pass Checks to Invoke-DbcCheck when no valid checks are found" {
+            &$Sut -Configuration TestDrive:\TestFile.json -Check 'Four,Five,Six'
+
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$Check -eq $Null}
+        }
+        It "Should correctly split an array of exclude checks" {
+            &$Sut -Configuration TestDrive:\TestFile.json -ExcludeCheck 'One,Two,Three'
+
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$ExcludeCheck -and ($ExcludeCheck | Where-Object {$_ -in $MockTags}).Count -eq $ExcludeCheck.Count}
+        }
+        It "Should correctly remove unavailable checks when using ExcludeCheck parameter" {
+            &$Sut -Configuration TestDrive:\TestFile.json -ExcludeCheck 'One,Two,Four'
+
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$ExcludeCheck -and $ExcludeCheck.Count -eq 2}
+        }
+        It "Should not pass ExcludeCheck to Invoke-DbcCheck when no valid checks are found" {
+            &$Sut -Configuration TestDrive:\TestFile.json -ExcludeCheck 'Four,Five,Six'
+
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$ExcludeCheck -eq $Null}
+        }
+        It "Should pass AllChecks to Invoke-DbcCheck when * is passed to Check parameter" {
+            &$Sut -Configuration TestDrive:\TestFile.json -Check '*'
+
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$AllChecks}
+        }
+        It "Should pass AllChecks to Invoke-DbcCheck when '' is passed to Check parameter" {
+            &$Sut -Configuration TestDrive:\TestFile.json -Check ''
+
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$AllChecks}
+        }
+        It "Should pass AllChecks to Invoke-DbcCheck when '  ' is passed to Check parameter" {
+            &$Sut -Configuration TestDrive:\TestFile.json -Check '  '
+
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$AllChecks}
+        }
+        It "Should warn when the PesterOutputPath already exists" {
+            &$Sut -Configuration TestDrive:\TestFile.json -PesterOutputPath TestDrive:\TestOutput.xml
+
+            Assert-MockCalled -CommandName Write-Warning -Scope It -ParameterFilter {$Message -like 'Pester output file already exists*'}
+        }
     }
 
     Context "Testing Outputs" {
