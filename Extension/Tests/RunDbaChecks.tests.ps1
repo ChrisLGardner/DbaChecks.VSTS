@@ -158,6 +158,16 @@ Describe "Testing RunDbaChecks.ps1" {
 
             Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$Credential -and $Credential.Username -eq 'SqlUsername' -and $Credential.GetNetworkCredential().Password -eq '5up3r5ecr3t!'}
         }
+        It "Should correctly split a string of Sql Instance names and pass to Invoke-DbcCheck as an array" {
+            &$Sut -Configuration TestDrive:\TestFile.json -SqlInstance 'Localhost\SqlInstance1, remote\sqlinstance2'
+
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$SqlInstance -and $SqlInstance.Count -eq 2}
+        }
+        It "Should correctly split a string of computer names and pass to Invoke-DbcCheck as an array" {
+            &$Sut -Configuration TestDrive:\TestFile.json -ComputerName 'Localhost, remote'
+
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$ComputerName -and $ComputerName.Count -eq 2}
+        }
     }
 
     Context "Testing Outputs" {
