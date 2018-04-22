@@ -124,6 +124,14 @@ if ($pesterOutputPath) {
     $InvokeDbcCheckParameters.add('OutputFile',$pesterOutputPath)
     $InvokeDbcCheckParameters.add('OutputFormat','NunitXML')
 }
+if ($Credential) {
+    Write-Verbose -Message "Adding Credential to Invoke-DbcCheck call"
+    $InvokeDbcCheckParameters.Add('Credential',$Credential)
+}
+if ($SqlCredential) {
+    Write-Verbose -Message "Adding SQL Credential to Invoke-DbcCheck call"
+    $InvokeDbcCheckParameters.Add('SqlCredential',$SqlCredential)
+}
 
 $InvokeDbcCheckOutput = Invoke-DbcCheck @InvokeDbcCheckParameters -PassThru
 
