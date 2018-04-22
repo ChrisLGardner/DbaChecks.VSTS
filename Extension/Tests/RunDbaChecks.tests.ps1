@@ -1,6 +1,13 @@
 $Sut = Join-Path -Path $PsScriptRoot -ChildPath "..\RunDbaChecks\RunDbaChecks.ps1" -Resolve
+#Install-PackageProvider -Name NuGet -RequiredVersion 2.8.5.201 -Scope CurrentUser -Force -Confirm:$false
+#Install-Module -Name DbaChecks -Scope CurrentUser -Force -Repository (Get-PsRepository)[0].Name
 
 Describe "Testing RunDbaChecks.ps1" {
+    Mock -CommandName Write-Verbose -MockWith {}
+    Mock -CommandName Write-Warning -MockWith {}
+    Mock -CommandName Install-Module -MockWith {}
+    Mock -CommandName Install-PackageProvider -MockWith {}
+
     Context "Testing inputs" {
         It "Should have Configuration as a mandatory parameter" {
             (Get-Command $Sut).Parameters['Configuration'].Attributes.Mandatory | Should -Be $true
@@ -17,8 +24,8 @@ Describe "Testing RunDbaChecks.ps1" {
         It "Should have SqlInstance as a string array parameter" {
             (Get-Command $Sut).Parameters['SqlInstance'].ParameterType.Name | Should -Be 'String[]'
         }
-        It "Should have SqlServer as a string array parameter" {
-            (Get-Command $Sut).Parameters['SqlServer'].ParameterType.Name | Should -Be 'String[]'
+        It "Should have ComputerName as a string array parameter" {
+            (Get-Command $Sut).Parameters['ComputerName'].ParameterType.Name | Should -Be 'String[]'
         }
         It "Should have Check as a string array parameter" {
             (Get-Command $Sut).Parameters['Check'].ParameterType.Name | Should -Be 'String[]'
