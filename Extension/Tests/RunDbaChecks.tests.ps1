@@ -118,6 +118,35 @@ Describe "Testing RunDbaChecks.ps1" {
 
             Assert-MockCalled -CommandName Write-Warning -Scope It -ParameterFilter {$Message -like 'Pester output file already exists*'}
         }
+        It "Should warn when the PowerBiOutputPath already exists" {
+            &$Sut -Configuration TestDrive:\TestFile.json -powerBiOutputPath TestDrive:\TestOutput.xml
+
+            Assert-MockCalled -CommandName Write-Warning -Scope It -ParameterFilter {$Message -like 'PowerBI output file already exists*'}
+        }
+        It "Should warn when a credential username is passed in without a password and not produce a credential object for Invoke-DbcCheck" {
+            &$Sut -Configuration TestDrive:\TestFile.json -credentialUsername 'Username'
+
+            Assert-MockCalled -CommandName Write-Warning -Scope It -ParameterFilter {$Message -eq 'Full credentials not provided, please check values enterred.'}
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$Credential -eq $Null}
+        }
+        It "Should warn when a credential password is passed in without a username and not produce a credential object for Invoke-DbcCheck" {
+            &$Sut -Configuration TestDrive:\TestFile.json -credentialPassword '5up3r5ecr3t!'
+
+            Assert-MockCalled -CommandName Write-Warning -Scope It -ParameterFilter {$Message -eq 'Full credentials not provided, please check values enterred.'}
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$Credential -eq $Null}
+        }
+        It "Should warn when a SQL credential username is passed in without a password and not produce a credential object for Invoke-DbcCheck" {
+            &$Sut -Configuration TestDrive:\TestFile.json -sqlCredentialUsername 'SqlUsername'
+
+            Assert-MockCalled -CommandName Write-Warning -Scope It -ParameterFilter {$Message -eq 'Full SQL credentials not provided, please check values enterred.'}
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$SqlCredential -eq $Null}
+        }
+        It "Should warn when a  SQL credential password is passed in without a username and not produce a credential object for Invoke-DbcCheck" {
+            &$Sut -Configuration TestDrive:\TestFile.json -sqlCredentialPassword '5up3r5ecr3t!'
+
+            Assert-MockCalled -CommandName Write-Warning -Scope It -ParameterFilter {$Message -eq 'Full SQL credentials not provided, please check values enterred.'}
+            Assert-MockCalled -CommandName Invoke-DbcCheck -Scope It -ParameterFilter {$SqlCredential -eq $Null}
+        }
     }
 
     Context "Testing Outputs" {
